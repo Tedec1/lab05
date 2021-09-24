@@ -8,6 +8,8 @@
 
 #include <cstdlib>
 #include <ctime>
+#include <map>
+#include <array>
 
 #include "mondrian.h"
 
@@ -15,18 +17,54 @@ using namespace std;
 
 void Mondrian::_paint_recursive(Picture &picture, int left, int top, int right, int bottom) {
     // base case 1 - in case we made a zero width or height rectangle
-
+    int width = right - left;
+    int height = bottom - top;
+    if(width <= 0 || height <= 0){
+        return;
+    }
     // base case 2 - rectangle is now "small enough"
     // Fill with a color (or not) using _color_fill()
 
+    if(width * height <= 35000){
+        _color_fill(picture,left,top,right,bottom);
+        return;
+    }
+
+    if(height >= width){
+        int x = rand() % width;
+        _draw_vertical_line(picture,x,top,bottom);
+        _paint_recursive(picture,left,top,x - 1, bottom);
+        _paint_recursive(picture,x + 1,top,right,bottom);
+    } else {
+        int y = rand() % height;
+        _draw_horizontal_line(picture,y,left,right);
+        _paint_recursive(picture,left,top,right,y-1);
+        _paint_recursive(picture,left,y+1,right,bottom);
+    }
     // otherwise, split the rectangle in two at random, and paint the
-    // two rectangles recursively; make sure not to paint over the 
+    // two rectangles recursively; make sure not to paint over the
     // dividing lines!
+
+
 }
 
 void Mondrian::_color_fill(Picture &picture, int left, int top, int right, int bottom) {
     int r, g, b;
+    vector<vector<int>> palette = {{255,0,0,},{0,0,128},{255,215,0},{255,255,255},{0,0,0}};
+    map<char,vector<int>> colors;
+    colors.insert(make_pair('r',palette[0]));
+    colors.insert(make_pair('b',palette[1]));
+    colors.insert(make_pair('y',palette[2]));
+    colors.insert(make_pair('w',palette[3]));
+    colors.insert(make_pair('b',palette[4]));
+    char weight[11]("rgbywwwwww");
+    int rand_color = rand() % 11;
+    char c = weight[rand_color];
+    r = colors[c][0];
+    g = colors[c][1];
+    b = colors[c][2];
 
+//    colors.insert(pair<char,int>('r',0));
     // Choose a color at random from a palette;
     // for traditional Mondrian colors, a good palette is:
     // red: r = 255, g = 0, b = 0
@@ -34,11 +72,11 @@ void Mondrian::_color_fill(Picture &picture, int left, int top, int right, int b
     // yellow: r = 255, g = 215, b = 0
     // white: r = 255, g = 255, b = 255
     // black: r = 0, g = 0, b = 0
-
     // this just paints a random shade of blue
-    r = 0;
-    g = 0;
-    b = rand() % 255;
+
+//    r = 0;
+//    g = 0;
+//    b = rand() % 255;
 
     for (int x = left; x <= right; x++) {
         for (int y = top; y <= bottom; y++) {
