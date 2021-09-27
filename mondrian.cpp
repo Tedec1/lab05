@@ -30,16 +30,16 @@ void Mondrian::_paint_recursive(Picture &picture, int left, int top, int right, 
         return;
     }
 
-    if(height >= width){
+    if(width >= height){
         int x = rand() % width;
+        _paint_recursive(picture,left,top,x-1, bottom);//right
+        _paint_recursive(picture,x+1,top,right,bottom);//left
         _draw_vertical_line(picture,x,top,bottom);
-        _paint_recursive(picture,left,top,x - 1, bottom);
-        _paint_recursive(picture,x + 1,top,right,bottom);
     } else {
         int y = rand() % height;
+        _paint_recursive(picture,left,top,right,y + 1); //top
+        _paint_recursive(picture,left,y - 1,right,bottom); //bottom
         _draw_horizontal_line(picture,y,left,right);
-        _paint_recursive(picture,left,top,right,y-1);
-        _paint_recursive(picture,left,y+1,right,bottom);
     }
     // otherwise, split the rectangle in two at random, and paint the
     // two rectangles recursively; make sure not to paint over the
@@ -57,8 +57,8 @@ void Mondrian::_color_fill(Picture &picture, int left, int top, int right, int b
     colors.insert(make_pair('y',palette[2]));
     colors.insert(make_pair('w',palette[3]));
     colors.insert(make_pair('b',palette[4]));
-    char weight[11]("rgbywwwwww");
-    int rand_color = rand() % 11;
+    vector<char> weight = {'r','y','b','w'};
+    int rand_color = rand() % (weight.size());
     char c = weight[rand_color];
     r = colors[c][0];
     g = colors[c][1];
