@@ -10,7 +10,8 @@
 #include <ctime>
 #include <map>
 #include <array>
-
+#include <cmath>
+#include <iostream>
 #include "mondrian.h"
 
 using namespace std;
@@ -50,20 +51,22 @@ void Mondrian::_paint_recursive(Picture &picture, int left, int top, int right, 
 
 void Mondrian::_color_fill(Picture &picture, int left, int top, int right, int bottom) {
     int r, g, b;
-    vector<vector<int>> palette = {{255,0,0,},{0,0,128},{255,215,0},{255,255,255},{0,0,0}};
+    vector<vector<int>> palette = {{4,231,98,},{1, 111, 185},{34, 174, 209},{109, 142, 160},{38, 65, 60}};
     map<char,vector<int>> colors;
     colors.insert(make_pair('r',palette[0]));
     colors.insert(make_pair('b',palette[1]));
     colors.insert(make_pair('y',palette[2]));
     colors.insert(make_pair('w',palette[3]));
-    colors.insert(make_pair('b',palette[4]));
-    vector<char> weight = {'r','y','b','w','w','w','w','w','w','w'};
+    colors.insert(make_pair('B',palette[4]));
+    vector<char> weight = {'r','y','b','w','B'};
     int rand_color = rand() % (weight.size());
     char c = weight[rand_color];
-    r = colors[c][0];
-    g = colors[c][1];
-    b = colors[c][2];
-
+//    r = colors[c][0];
+//    g = colors[c][1];
+//    b = colors[c][2];
+    r = rand() % 225;
+    g = rand() % 225;
+    b = rand() % 225;
 //    colors.insert(pair<char,int>('r',0));
     // Choose a color at random from a palette;
     // for traditional Mondrian colors, a good palette is:
@@ -98,9 +101,19 @@ void Mondrian::_draw_vertical_line(Picture &picture, int x, int top, int bottom)
     }
 }
 
-void Mondrian::paint(string output_filename, int width, int height) {
+void Mondrian::paint(const string& output_filename, int width, int height, const string& name) {
+
+    unsigned int seed = 0;
+    int j = 1;
+    for (char c: name){
+        int i = c;
+        j++;
+        seed += i * j;
+    }
+    cout << seed;
+
     // get a new random seed each time
-    srand(time(nullptr));
+    srand(seed);
 
     // create a white picture
     Picture picture(width, height, 255, 255, 255);
@@ -115,5 +128,5 @@ void Mondrian::paint(string output_filename, int width, int height) {
     _paint_recursive(picture, 1, 1, width - 2, height - 2);
 
     // save result
-    picture.save(output_filename);
+    picture.save(output_filename + ".png");
 }

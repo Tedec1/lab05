@@ -16,7 +16,7 @@ using namespace std;
 
 class Mondrian {
 public:
-    void paint(string output_filename, int width, int height);
+    void paint(const string& output_filename, int width, int height, const string& name);
 
 private:
     void _paint_recursive(Picture& picture, int left, int top, int right, int bottom);
