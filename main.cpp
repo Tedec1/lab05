@@ -26,9 +26,16 @@ int main() {
     // get the output filename
     string filename;
     do {
-        cout << "Please enter the filename for the picture you wish to create (with a .png extension):" << endl;
+        cout << "Please enter the filename for the picture you wish to create:" << endl;
         getline(cin, filename);
     } while (filename.empty());
+
+    string name;
+    do {
+        cout << "Please enter your name:" << endl;
+        getline(cin, name);
+    } while (name.empty());
+
 
     // get picture dimensions
     int width = 0, height = 0;
@@ -49,7 +56,7 @@ int main() {
     cout << "Please wait, we are painting your picture..." << endl;
 
     Mondrian artist;
-    artist.paint(filename, width, height);
+    artist.paint(filename, width, height, name);
 
     cout << endl;
     cout << "Your picture is ready!" << endl;
